@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smash & Stack — Menu Board</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--background-color);
+      color: var(--text-color);
+      font-family: 'Inter', sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      line-height: 1;
+    }
+
+    #app-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      background-image:
+        radial-gradient(ellipse at top left, rgba(232,40,11,0.1) 0%, transparent 45%),
+        radial-gradient(ellipse at bottom right, rgba(245,166,35,0.06) 0%, transparent 45%);
+    }
+
+    #app-container.loaded { opacity: 1; }
+
+    /* ───── LATE NIGHT DIM ───── */
+    /* Dims header/ticker/footer chrome but not the menu content */
+    body.mode-late .header,
+    body.mode-late .ticker-bar,
+    body.mode-late .footer {
+      filter: brightness(0.55);
+      transition: filter 1.5s ease;
+    }
+
+    /* ───── HEADER ───── */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.55rem 1.5rem;
+      background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.35) 100%);
+      border-bottom: 2px solid var(--primary-color);
+      flex-shrink: 0;
+      transition: filter 1.5s ease;
+    }
+
+    .header-brand { display: flex; align-items: center; gap: 0.75rem; }
+
+    .brand-logo-text {
+      width: clamp(38px, 4.5vw, 60px);
+      height: clamp(38px, 4.5vw, 60px);
+      background: var(--primary-color);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.1rem, 1.8vw, 1.6rem);
+      color: #fff;
+      letter-spacing: -0.02em;
+      flex-shrink: 0;
+    }
+
+    .brand-text { display: flex; flex-direction: column; gap: 1px; }
+
+    .brand-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.6rem, 2.8vw, 2.6rem);
+      color: var(--accent-color);
+      letter-spacing: 0.04em;
+      line-height: 1;
+    }
+
+    .brand-tagline {
+      font-size: clamp(0.5rem, 0.85vw, 0.7rem);
+      color: var(--text-color);
+      opacity: 0.6;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .header-center { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
+
+    .mode-badge {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(0.8rem, 1.4vw, 1.15rem);
+      letter-spacing: 0.12em;
+      padding: 0.25em 0.9em;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .mode-badge.normal-mode { background: var(--primary-color); color: #fff; }
+    .mode-badge.lunch-mode  { background: var(--accent-color); color: #160800; }
+    .mode-badge.late-mode   { background: #1e1432; color: #c0adff; border: 1px solid #6c5eb5; }
+
+    .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.2rem; }
+
+    .clock {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.3rem, 2.3vw, 2rem);
+      color: var(--text-color);
+      letter-spacing: 0.06em;
+    }
+
+    .header-location {
+      font-size: clamp(0.5rem, 0.75vw, 0.65rem);
+      color: var(--text-color);
+      opacity: 0.5;
+      letter-spacing: 0.06em;
+      text-align: right;
+    }
+
+    /* ───── MAIN CONTENT SWITCHER ───── */
+    .main-content { flex: 1; overflow: hidden; position: relative; }
+
+    .view {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.6s ease;
+    }
+
+    .view.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* ═══════════════════════════════════════
+       NORMAL MODE
+    ═══════════════════════════════════════ */
+    .special-banner {
+      flex-shrink: 0;
+      background: linear-gradient(135deg, #c01e06 0%, #9e1805 60%, #7a1004 100%);
+      padding: 0.55rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(245,166,35,0.25);
+    }
+
+    .special-banner::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; bottom: 0;
+      width: 35%;
+      background: linear-gradient(90deg, transparent, rgba(245,166,35,0.07));
+    }
+
+    .special-star-badge {
+      background: var(--accent-color);
+      color: #160800;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(0.6rem, 0.95vw, 0.8rem);
+      letter-spacing: 0.1em;
+      padding: 0.3em 0.7em;
+      border-radius: 3px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .special-divider {
+      width: 2px;
+      height: 40px;
+      background: rgba(255,255,255,0.2);
+      flex-shrink: 0;
+    }
+
+    .special-day-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(0.7rem, 1.1vw, 0.9rem);
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.15em;
+      line-height: 1;
+    }
+
+    .special-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.1rem, 2vw, 1.6rem);
+      color: #fff;
+      letter-spacing: 0.04em;
+      line-height: 1;
+    }
+
+    .special-desc {
+      font-size: clamp(0.6rem, 0.88vw, 0.72rem);
+      color: rgba(255,255,255,0.72);
+      flex: 1;
+      line-height: 1.35;
+    }
+
+    .special-deal {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1rem, 1.7vw, 1.4rem);
+      color: var(--accent-color);
+      white-space: nowrap;
+      letter-spacing: 0.04em;
+      text-shadow: 0 0 20px rgba(245,166,35,0.4);
+    }
+
+    /* Menu grid */
+    .menu-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      overflow: hidden;
+    }
+
+    .cat-col {
+      border-right: 1px solid rgba(255,255,255,0.07);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .cat-col:last-child { border-right: none; }
+
+    .cat-header {
+      padding: 0.45rem 0.85rem;
+      background: rgba(0,0,0,0.5);
+      border-bottom: 2px solid var(--primary-color);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-shrink: 0;
+    }
+
+    .cat-icon { font-size: clamp(0.85rem, 1.3vw, 1.1rem); }
+
+    .cat-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(0.85rem, 1.5vw, 1.2rem);
+      letter-spacing: 0.1em;
+      color: var(--accent-color);
+    }
+
+    .cat-items { flex: 1; overflow: hidden; padding: 0.3rem 0; }
+
+    .menu-item {
+      padding: 0.38rem 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .menu-item:last-child { border-bottom: none; }
+    .menu-item.popular { background: rgba(232,40,11,0.07); }
+
+    .item-info { flex: 1; min-width: 0; }
+
+    .item-name {
+      font-size: clamp(0.68rem, 1.05vw, 0.88rem);
+      font-weight: 700;
+      color: var(--text-color);
+      line-height: 1.2;
+      display: flex;
+      align-items: center;
+      gap: 0.3em;
+      flex-wrap: wrap;
+    }
+
+    .spicy-tag  { font-size: 0.75em; color: #ff6535; }
+    .veg-tag    { font-size: 0.75em; color: #5cba5c; }
+
+    .popular-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent-color);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .item-desc {
+      font-size: clamp(0.52rem, 0.76vw, 0.64rem);
+      color: var(--text-color);
+      opacity: 0.5;
+      margin-top: 1px;
+      line-height: 1.3;
+    }
+
+    .item-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+      color: var(--accent-color);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ═══════════════════════════════════════
+       LUNCH RUSH MODE
+    ═══════════════════════════════════════ */
+    .lunch-topbar {
+      flex-shrink: 0;
+      background: linear-gradient(135deg, #c88400 0%, #e89200 50%, #c88400 100%);
+      padding: 0.5rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #160800;
+    }
+
+    .lunch-top-left { display: flex; align-items: baseline; gap: 0.75rem; }
+
+    .lunch-heading {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.3rem, 2.2vw, 1.8rem);
+      letter-spacing: 0.08em;
+    }
+
+    .lunch-subheading {
+      font-size: clamp(0.6rem, 0.9vw, 0.75rem);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      opacity: 0.7;
+    }
+
+    .lunch-countdown-wrap { text-align: right; }
+
+    .countdown-label {
+      font-size: clamp(0.5rem, 0.75vw, 0.62rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.65;
+    }
+
+    .countdown-time {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+      letter-spacing: 0.06em;
+    }
+
+    /* Combo section */
+    .combos-section {
+      flex-shrink: 0;
+      padding: 0.6rem 1.5rem;
+    }
+
+    .combos-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(0.7rem, 1.1vw, 0.9rem);
+      letter-spacing: 0.2em;
+      color: var(--accent-color);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .combos-label::before,
+    .combos-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(245,166,35,0.4), transparent);
+    }
+
+    .combo-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.7rem;
+    }
+
+    .combo-card {
+      background: rgba(255,255,255,0.04);
+      border: 1.5px solid rgba(245,166,35,0.25);
+      border-radius: 8px;
+      padding: 0.7rem 0.85rem;
+      position: relative;
+      overflow: hidden;
+      animation: card-in 0.4s ease both;
+    }
+
+    .combo-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    }
+
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .combo-badge-tag {
+      display: inline-block;
+      font-size: clamp(0.5rem, 0.75vw, 0.62rem);
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: var(--primary-color);
+      color: #fff;
+      padding: 0.2em 0.55em;
+      border-radius: 3px;
+      margin-bottom: 0.3rem;
+    }
+
+    .combo-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(0.95rem, 1.65vw, 1.3rem);
+      color: var(--accent-color);
+      letter-spacing: 0.04em;
+      line-height: 1;
+    }
+
+    .combo-includes {
+      font-size: clamp(0.55rem, 0.85vw, 0.68rem);
+      color: var(--text-color);
+      opacity: 0.65;
+      margin-top: 0.25rem;
+      line-height: 1.35;
+    }
+
+    .combo-price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.4rem;
+      margin-top: 0.4rem;
+    }
+
+    .combo-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.3rem, 2.3vw, 1.9rem);
+      color: var(--accent-color);
+      line-height: 1;
+      text-shadow: 0 0 20px rgba(245,166,35,0.35);
+    }
+
+    .combo-was {
+      font-size: clamp(0.6rem, 0.85vw, 0.7rem);
+      color: var(--text-color);
+      opacity: 0.4;
+      text-decoration: line-through;
+    }
+
+    .combo-save {
+      font-size: clamp(0.56rem, 0.8vw, 0.66rem);
+      font-weight: 800;
+      color: #6fdf6f;
+      letter-spacing: 0.04em;
+    }
+
+    /* Lunch mini menu */
+    .lunch-mini {
+      flex: 1;
+      overflow: hidden;
+      padding: 0 1.5rem 0.4rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mini-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(0.6rem, 0.9vw, 0.75rem);
+      letter-spacing: 0.2em;
+      color: var(--text-color);
+      opacity: 0.35;
+      padding: 0.35rem 0 0.3rem;
+      text-align: center;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .mini-col {
+      padding: 0 0.6rem;
+      border-right: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .mini-col:first-child { padding-left: 0; }
+    .mini-col:last-child  { border-right: none; }
+
+    .mini-cat-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(0.65rem, 1vw, 0.8rem);
+      color: var(--accent-color);
+      letter-spacing: 0.1em;
+      border-bottom: 1px solid rgba(245,166,35,0.2);
+      padding-bottom: 0.15rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .mini-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.12rem 0;
+    }
+
+    .mini-item-name {
+      font-size: clamp(0.56rem, 0.82vw, 0.66rem);
+      color: var(--text-color);
+      opacity: 0.75;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mini-item-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(0.6rem, 0.9vw, 0.75rem);
+      color: var(--accent-color);
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-left: 0.25rem;
+    }
+
+    /* ═══════════════════════════════════════
+       LATE NIGHT MODE
+    ═══════════════════════════════════════ */
+    #view-late {
+      background: linear-gradient(160deg, #070412 0%, #0c0718 50%, #080510 100%);
+    }
+
+    .late-topbar {
+      flex-shrink: 0;
+      padding: 0.65rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.2rem;
+      background: rgba(15,8,30,0.9);
+      border-bottom: 1px solid rgba(108,94,181,0.35);
+    }
+
+    .late-moon { font-size: clamp(1.2rem, 2vw, 1.8rem); }
+
+    .late-top-text { text-align: center; }
+
+    .late-heading {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.4rem, 2.4vw, 2rem);
+      letter-spacing: 0.18em;
+      color: #c0adff;
+    }
+
+    .late-subheading {
+      font-size: clamp(0.55rem, 0.82vw, 0.68rem);
+      color: rgba(192,173,255,0.5);
+      letter-spacing: 0.1em;
+    }
+
+    .late-menu-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.2rem 2rem;
+    }
+
+    .late-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0 4rem;
+      max-width: 860px;
+      width: 100%;
+    }
+
+    .late-cat-block { margin-bottom: 0.5rem; }
+
+    .late-cat-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+      letter-spacing: 0.14em;
+      color: #8b7bd4;
+      border-bottom: 1px solid rgba(108,94,181,0.3);
+      padding-bottom: 0.3rem;
+      margin-bottom: 0.45rem;
+    }
+
+    .late-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.38rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .late-item:last-child { border-bottom: none; }
+
+    .late-item-name {
+      font-size: clamp(0.78rem, 1.25vw, 1rem);
+      color: var(--text-color);
+      opacity: 0.88;
+    }
+
+    .late-item-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(0.9rem, 1.4vw, 1.15rem);
+      color: #c0adff;
+    }
+
+    /* ───── TICKER ───── */
+    .ticker-bar {
+      flex-shrink: 0;
+      height: clamp(28px, 3.5vh, 38px);
+      background: var(--primary-color);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      transition: filter 1.5s ease;
+    }
+
+    .ticker-scroll {
+      display: inline-flex;
+      white-space: nowrap;
+      animation: ticker 60s linear infinite;
+    }
+
+    .ticker-text {
+      font-size: clamp(0.6rem, 0.92vw, 0.76rem);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #fff;
+      padding-right: 2.5rem;
+    }
+
+    @keyframes ticker {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ───── FOOTER ───── */
+    .footer {
+      flex-shrink: 0;
+      padding: 0.3rem 1.5rem;
+      background: rgba(0,0,0,0.65);
+      border-top: 1px solid rgba(255,255,255,0.07);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      transition: filter 1.5s ease;
+    }
+
+    .loc-card {
+      font-size: clamp(0.5rem, 0.75vw, 0.62rem);
+      color: var(--text-color);
+      opacity: 0.45;
+      text-align: center;
+    }
+
+    .loc-name {
+      font-weight: 700;
+      opacity: 0.7;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .footer-separator {
+      width: 1px;
+      height: 24px;
+      background: rgba(255,255,255,0.12);
+    }
+
+    /* ───── DECORATIVE ───── */
+    .flame-divider {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      margin: 0 auto;
+      opacity: 0.15;
+      font-size: 0.6rem;
+    }
+  </style>
+</head>
+<body>
+<div id="app-container">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-brand">
+      <div class="brand-logo-text" id="logo-initials">S&S</div>
+      <div class="brand-text">
+        <div class="brand-name" data-bind-text="storefront.chain_name">Smash &amp; Stack</div>
+        <div class="brand-tagline" data-bind-text="storefront.tagline">Fresh. Fast. Fired Up.</div>
+      </div>
+    </div>
+
+    <div class="header-center">
+      <div class="mode-badge normal-mode" id="mode-badge">DAILY MENU</div>
+    </div>
+
+    <div class="header-right">
+      <div class="clock" id="clock">12:00 PM</div>
+      <div class="header-location" id="header-locations"></div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <!-- ── NORMAL MODE ── -->
+    <div class="view active" id="view-normal">
+      <div class="special-banner" id="special-banner">
+        <div class="special-star-badge">⭐ TODAY'S SPECIAL</div>
+        <div class="special-divider"></div>
+        <div>
+          <div class="special-day-label" id="special-day-label">MONDAY SPECIAL</div>
+          <div class="special-title" id="special-title">Double Down Monday</div>
+        </div>
+        <div class="special-desc" id="special-desc">Get our legendary Double Stack at Classic Smash prices every Monday — all day long</div>
+        <div class="special-deal" id="special-deal">Double Stack for $7.99</div>
+      </div>
+      <div class="menu-grid" id="menu-grid">
+        <!-- populated by JS -->
+      </div>
+    </div>
+
+    <!-- ── LUNCH RUSH MODE ── -->
+    <div class="view" id="view-lunch">
+      <div class="lunch-topbar">
+        <div class="lunch-top-left">
+          <div class="lunch-heading">🔥 LUNCH RUSH — 11AM TO 2PM</div>
+          <div class="lunch-subheading">COMBO PRICING ACTIVE NOW</div>
+        </div>
+        <div class="lunch-countdown-wrap">
+          <div class="countdown-label">ENDS IN</div>
+          <div class="countdown-time" id="lunch-countdown">1h 30m</div>
+        </div>
+      </div>
+
+      <div class="combos-section">
+        <div class="combos-label">🍔 COMBO DEALS — SAVE UP TO $2.98</div>
+        <div class="combo-grid" id="combo-grid">
+          <!-- populated by JS -->
+        </div>
+      </div>
+
+      <div class="lunch-mini">
+        <div class="mini-label">— FULL MENU ALSO AVAILABLE —</div>
+        <div class="mini-grid" id="mini-grid">
+          <!-- populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ── LATE NIGHT MODE ── -->
+    <div class="view" id="view-late">
+      <div class="late-topbar">
+        <div class="late-moon">🌙</div>
+        <div class="late-top-text">
+          <div class="late-heading">LATE NIGHT MENU</div>
+          <div class="late-subheading" data-bind-text="storefront.chain_name">SMASH &amp; STACK</div>
+        </div>
+        <div class="late-moon">🌙</div>
+      </div>
+      <div class="late-menu-body">
+        <div class="late-grid" id="late-grid">
+          <!-- populated by JS -->
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main-content -->
+
+  <!-- TICKER -->
+  <div class="ticker-bar">
+    <div class="ticker-scroll" id="ticker-scroll">
+      <span class="ticker-text" id="ticker-t1" data-bind-text="app_settings.ticker_text"></span>
+      <span class="ticker-text" id="ticker-t2" data-bind-text="app_settings.ticker_text"></span>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer" id="footer">
+    <!-- populated by JS -->
+  </footer>
+
+</div><!-- /app-container -->
+
+<script>
+  async function loadAppData() {
+    try {
+      const res = await fetch('data.json');
+      return await res.json();
+    } catch (e) {
+      console.error('data.json load failed', e);
+      return null;
+    }
+  }
+
+  let appData = null;
+  let currentMode = null;
+
+  // ── CLOCK ──
+  function updateClock() {
+    const now = new Date();
+    const h = now.getHours() % 12 || 12;
+    const m = now.getMinutes().toString().padStart(2, '0');
+    const ap = now.getHours() >= 12 ? 'PM' : 'AM';
+    document.getElementById('clock').textContent = `${h}:${m} ${ap}`;
+  }
+
+  // ── MODE DETECTION ──
+  function detectMode(s) {
+    const h = new Date().getHours();
+    const ls = s.lunch_rush_start.value, le = s.lunch_rush_end.value;
+    const ns = s.late_night_start.value;
+    if (h >= ls && h < le) return 'lunch';
+    if (h >= ns) return 'late';
+    return 'normal';
+  }
+
+  // ── LUNCH COUNTDOWN ──
+  function updateCountdown(s) {
+    const now = new Date();
+    const end = new Date(now);
+    end.setHours(s.lunch_rush_end.value, 0, 0, 0);
+    const diff = end - now;
+    if (diff <= 0) return;
+    const hr = Math.floor(diff / 3600000);
+    const mn = Math.floor((diff % 3600000) / 60000);
+    const el = document.getElementById('lunch-countdown');
+    if (el) el.textContent = hr > 0 ? `${hr}h ${mn}m` : `${mn}m`;
+  }
+
+  // ── SWITCH MODE ──
+  function switchMode(mode) {
+    if (mode === currentMode) return;
+    currentMode = mode;
+
+    ['view-normal', 'view-lunch', 'view-late'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+
+    const badge = document.getElementById('mode-badge');
+    badge.className = 'mode-badge';
+    document.body.className = document.body.className.replace(/\bmode-\S+/g, '').trim();
+
+    if (mode === 'lunch') {
+      document.getElementById('view-lunch').classList.add('active');
+      badge.classList.add('lunch-mode');
+      badge.textContent = '🔥 LUNCH RUSH';
+    } else if (mode === 'late') {
+      document.getElementById('view-late').classList.add('active');
+      badge.classList.add('late-mode');
+      badge.textContent = '🌙 LATE NIGHT';
+      document.body.classList.add('mode-late');
+    } else {
+      document.getElementById('view-normal').classList.add('active');
+      badge.classList.add('normal-mode');
+      badge.textContent = 'DAILY MENU';
+    }
+  }
+
+  // ── RENDER NORMAL MENU GRID ──
+  function renderMenuGrid(data) {
+    const cats = data.sections.menu_categories.value;
+    const allItems = data.sections.menu_items.value;
+    const grid = document.getElementById('menu-grid');
+    grid.innerHTML = '';
+
+    cats.forEach((cat, ci) => {
+      const catItems = allItems
+        .map((item, idx) => ({ ...item, _idx: idx }))
+        .filter(item => item.category === cat.id);
+
+      const col = document.createElement('div');
+      col.className = 'cat-col';
+
+      const hdr = document.createElement('div');
+      hdr.className = 'cat-header';
+      hdr.innerHTML = `
+        <span class="cat-icon" data-bind-text="menu_categories.${ci}.icon">${cat.icon}</span>
+        <span class="cat-name" data-bind-text="menu_categories.${ci}.name">${cat.name}</span>
+      `;
+      col.appendChild(hdr);
+
+      const itemsWrap = document.createElement('div');
+      itemsWrap.className = 'cat-items';
+
+      catItems.forEach(item => {
+        const idx = item._idx;
+        const badges = [];
+        if (item.is_spicy) badges.push('<span class="spicy-tag">🌶</span>');
+        if (item.is_vegetarian) badges.push('<span class="veg-tag">🌱</span>');
+        if (item.is_popular) badges.push('<span class="popular-dot"></span>');
+
+        const row = document.createElement('div');
+        row.className = `menu-item${item.is_popular ? ' popular' : ''}`;
+        row.innerHTML = `
+          <div class="item-info">
+            <div class="item-name">
+              <span data-bind-text="menu_items.${idx}.name">${item.name}</span>
+              ${badges.join('')}
+            </div>
+            <div class="item-desc" data-bind-text="menu_items.${idx}.description">${item.description}</div>
+          </div>
+          <div class="item-price" data-bind-currency="menu_items.${idx}.price">$${item.price.toFixed(2)}</div>
+        `;
+        itemsWrap.appendChild(row);
+      });
+
+      col.appendChild(itemsWrap);
+      grid.appendChild(col);
+    });
+  }
+
+  // ── RENDER DAILY SPECIAL ──
+  function renderSpecial(data) {
+    const today = new Date().getDay();
+    const specials = data.sections.daily_specials.value;
+    const idx = specials.findIndex(s => s.day === today);
+    if (idx < 0) return;
+    const sp = specials[idx];
+
+    document.getElementById('special-day-label').textContent = sp.day_name.toUpperCase() + ' SPECIAL';
+    document.getElementById('special-day-label').setAttribute('data-bind-text', `daily_specials.${idx}.day_name`);
+    document.getElementById('special-title').textContent = sp.title;
+    document.getElementById('special-title').setAttribute('data-bind-text', `daily_specials.${idx}.title`);
+    document.getElementById('special-desc').textContent = sp.description;
+    document.getElementById('special-desc').setAttribute('data-bind-text', `daily_specials.${idx}.description`);
+    document.getElementById('special-deal').textContent = sp.deal_text;
+    document.getElementById('special-deal').setAttribute('data-bind-text', `daily_specials.${idx}.deal_text`);
+  }
+
+  // ── RENDER COMBO GRID ──
+  function renderCombos(data) {
+    const combos = data.sections.combo_deals.value;
+    const grid = document.getElementById('combo-grid');
+    grid.innerHTML = '';
+
+    combos.forEach((c, idx) => {
+      const card = document.createElement('div');
+      card.className = 'combo-card';
+      card.style.animationDelay = `${idx * 0.07}s`;
+      card.innerHTML = `
+        <div class="combo-badge-tag" data-bind-text="combo_deals.${idx}.badge">${c.badge}</div>
+        <div class="combo-name" data-bind-text="combo_deals.${idx}.name">${c.name}</div>
+        <div class="combo-includes" data-bind-text="combo_deals.${idx}.includes">${c.includes}</div>
+        <div class="combo-price-row">
+          <div class="combo-price" data-bind-currency="combo_deals.${idx}.combo_price">$${c.combo_price.toFixed(2)}</div>
+          <div class="combo-was" data-bind-currency="combo_deals.${idx}.regular_price">$${c.regular_price.toFixed(2)}</div>
+        </div>
+        <div class="combo-save" data-bind-text="combo_deals.${idx}.savings">${c.savings}</div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  // ── RENDER MINI MENU (lunch mode) ──
+  function renderMiniMenu(data) {
+    const cats = data.sections.menu_categories.value;
+    const allItems = data.sections.menu_items.value;
+    const grid = document.getElementById('mini-grid');
+    grid.innerHTML = '';
+
+    cats.forEach((cat, ci) => {
+      const catItems = allItems
+        .map((item, idx) => ({ ...item, _idx: idx }))
+        .filter(item => item.category === cat.id);
+
+      const col = document.createElement('div');
+      col.className = 'mini-col';
+
+      const hdr = document.createElement('div');
+      hdr.className = 'mini-cat-name';
+      hdr.setAttribute('data-bind-text', `menu_categories.${ci}.name`);
+      hdr.textContent = cat.name;
+      col.appendChild(hdr);
+
+      catItems.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'mini-row';
+        row.innerHTML = `
+          <span class="mini-item-name" data-bind-text="menu_items.${item._idx}.name">${item.name}</span>
+          <span class="mini-item-price" data-bind-currency="menu_items.${item._idx}.price">$${item.price.toFixed(2)}</span>
+        `;
+        col.appendChild(row);
+      });
+
+      grid.appendChild(col);
+    });
+  }
+
+  // ── RENDER LATE NIGHT MENU ──
+  function renderLateMenu(data) {
+    const cats = data.sections.menu_categories.value;
+    const allItems = data.sections.menu_items.value;
+    const grid = document.getElementById('late-grid');
+    grid.innerHTML = '';
+
+    const lateItems = allItems
+      .map((item, idx) => ({ ...item, _idx: idx }))
+      .filter(item => item.is_late_night);
+
+    cats.forEach((cat, ci) => {
+      const catLate = lateItems.filter(item => item.category === cat.id);
+      if (catLate.length === 0) return;
+
+      const block = document.createElement('div');
+      block.className = 'late-cat-block';
+
+      const hdr = document.createElement('div');
+      hdr.className = 'late-cat-title';
+      hdr.setAttribute('data-bind-text', `menu_categories.${ci}.name`);
+      hdr.textContent = `${cat.icon}  ${cat.name}`;
+      block.appendChild(hdr);
+
+      catLate.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'late-item';
+        row.innerHTML = `
+          <span class="late-item-name" data-bind-text="menu_items.${item._idx}.name">${item.name}</span>
+          <span class="late-item-price" data-bind-currency="menu_items.${item._idx}.price">$${item.price.toFixed(2)}</span>
+        `;
+        block.appendChild(row);
+      });
+
+      grid.appendChild(block);
+    });
+  }
+
+  // ── RENDER FOOTER LOCATIONS ──
+  function renderFooter(data) {
+    const locs = data.sections.locations.value;
+    const footer = document.getElementById('footer');
+    const headerLoc = document.getElementById('header-locations');
+
+    footer.innerHTML = locs.map((loc, idx) => `
+      <div class="loc-card">
+        <div class="loc-name" data-bind-text="locations.${idx}.name">${loc.name}</div>
+        <div data-bind-text="locations.${idx}.address">${loc.address}</div>
+        <div data-bind-text="locations.${idx}.hours">${loc.hours}</div>
+        <div data-bind-text="locations.${idx}.phone">${loc.phone}</div>
+      </div>
+      ${idx < locs.length - 1 ? '<div class="footer-separator"></div>' : ''}
+    `).join('');
+
+    headerLoc.textContent = locs.map(l => l.name).join('  ·  ');
+  }
+
+  // ── TICKER SETUP ──
+  function setupTicker(text) {
+    document.getElementById('ticker-t1').textContent = text;
+    document.getElementById('ticker-t2').textContent = text;
+    // Approx: 10px per character at our font size, target ~60px/s speed
+    const duration = Math.max(18, (text.length * 9.5) / 60);
+    document.getElementById('ticker-scroll').style.animationDuration = `${duration}s`;
+  }
+
+  // ── LOGO INITIALS ──
+  function setLogoInitials(name) {
+    const words = name.split(/\s+/).filter(w => w && w !== '&' && w !== 'and');
+    const initials = words.slice(0, 2).map(w => w[0]).join('');
+    document.getElementById('logo-initials').textContent = initials;
+  }
+
+  // ── INIT ──
+  async function init() {
+    appData = await loadAppData();
+    if (!appData) return;
+
+    const s = appData.sections.app_settings;
+
+    // Apply CSS variables (no defaults in :root — all set here before reveal)
+    document.documentElement.style.setProperty('--primary-color', s.primary_color.value);
+    document.documentElement.style.setProperty('--accent-color', s.accent_color.value);
+    document.documentElement.style.setProperty('--background-color', s.background_color.value);
+    document.documentElement.style.setProperty('--text-color', s.text_color.value);
+
+    // Brand
+    const chainName = appData.sections.storefront.chain_name.value;
+    document.querySelector('.brand-name').textContent = chainName;
+    document.querySelector('.brand-tagline').textContent = appData.sections.storefront.tagline.value;
+    setLogoInitials(chainName);
+
+    // Ticker
+    setupTicker(s.ticker_text.value);
+
+    // All views rendered unconditionally (always-on init)
+    renderMenuGrid(appData);
+    renderSpecial(appData);
+    renderCombos(appData);
+    renderMiniMenu(appData);
+    renderLateMenu(appData);
+    renderFooter(appData);
+
+    // Clock + mode
+    updateClock();
+    switchMode(detectMode(s));
+    if (currentMode === 'lunch') updateCountdown(s);
+
+    // Reveal
+    document.getElementById('app-container').classList.add('loaded');
+
+    // Periodic: update every 30 seconds
+    setInterval(() => {
+      updateClock();
+      const newMode = detectMode(s);
+      switchMode(newMode);
+      if (currentMode === 'lunch') updateCountdown(s);
+    }, 30000);
+
+    // Sub-minute clock refresh
+    setInterval(updateClock, 15000);
+  }
+
+  init();
+</script>
+</body>
+</html>

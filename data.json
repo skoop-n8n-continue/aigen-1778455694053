@@ -1,0 +1,447 @@
+{
+  "app_id": "aigen-1778455694053",
+  "document_version": 1,
+  "sections": {
+    "storefront": {
+      "chain_name": {
+        "type": "text",
+        "label": "Chain Name",
+        "value": "Smash & Stack"
+      },
+      "tagline": {
+        "type": "text",
+        "label": "Tagline",
+        "value": "Fresh. Fast. Fired Up."
+      },
+      "established_year": {
+        "type": "text",
+        "label": "Established Year",
+        "value": "2018"
+      }
+    },
+    "app_settings": {
+      "primary_color": {
+        "type": "color",
+        "label": "Primary Color",
+        "value": "#E8280B"
+      },
+      "accent_color": {
+        "type": "color",
+        "label": "Accent Color",
+        "value": "#F5A623"
+      },
+      "background_color": {
+        "type": "color",
+        "label": "Background Color",
+        "value": "#0F0800"
+      },
+      "text_color": {
+        "type": "color",
+        "label": "Text Color",
+        "value": "#FFF8F0"
+      },
+      "lunch_rush_start": {
+        "type": "number",
+        "label": "Lunch Rush Start Hour (24h)",
+        "value": 11,
+        "meta": { "format": "integer" }
+      },
+      "lunch_rush_end": {
+        "type": "number",
+        "label": "Lunch Rush End Hour (24h)",
+        "value": 14,
+        "meta": { "format": "integer" }
+      },
+      "late_night_start": {
+        "type": "number",
+        "label": "Late Night Start Hour (24h)",
+        "value": 21,
+        "meta": { "format": "integer" }
+      },
+      "ticker_text": {
+        "type": "text",
+        "label": "Bottom Ticker Text",
+        "value": "🔥 FRESH NEVER FROZEN  •  SMASHED TO ORDER DAILY  •  EST. 2018  •  ORDER AT THE COUNTER  •  FOLLOW US @SMASHSTACK  •  🏆 BEST BURGER — REGIONAL FOOD AWARDS 2024  •  CATERING AVAILABLE — ASK AT THE COUNTER  •  "
+      }
+    },
+    "locations": {
+      "type": "collection",
+      "label": "Locations",
+      "item_schema": {
+        "id": { "type": "text", "label": "ID" },
+        "name": { "type": "text", "label": "Location Name" },
+        "address": { "type": "text", "label": "Address" },
+        "hours": { "type": "text", "label": "Hours" },
+        "phone": { "type": "text", "label": "Phone" }
+      },
+      "value": [
+        {
+          "id": "loc_d1o2w3",
+          "name": "Downtown",
+          "address": "123 Main Street",
+          "hours": "Mon–Sat 10AM–11PM  ·  Sun 11AM–10PM",
+          "phone": "(555) 234-5678"
+        },
+        {
+          "id": "loc_w4e5s6",
+          "name": "Westside",
+          "address": "456 Oak Avenue",
+          "hours": "Mon–Sun 10AM–Midnight",
+          "phone": "(555) 876-5432"
+        }
+      ]
+    },
+    "menu_categories": {
+      "type": "collection",
+      "label": "Menu Categories",
+      "item_schema": {
+        "id": { "type": "text", "label": "ID" },
+        "name": { "type": "text", "label": "Category Name" },
+        "icon": { "type": "text", "label": "Emoji Icon" }
+      },
+      "value": [
+        { "id": "cat_b1u2r3", "name": "Burgers", "icon": "🍔" },
+        { "id": "cat_c4h5k6", "name": "Chicken", "icon": "🍗" },
+        { "id": "cat_s7i8d9", "name": "Sides", "icon": "🍟" },
+        { "id": "cat_d1r2k3", "name": "Drinks", "icon": "🥤" },
+        { "id": "cat_d4s5s6", "name": "Desserts", "icon": "🍦" }
+      ]
+    },
+    "menu_items": {
+      "type": "collection",
+      "label": "Menu Items",
+      "item_schema": {
+        "id": { "type": "text", "label": "ID" },
+        "name": { "type": "text", "label": "Item Name" },
+        "description": { "type": "textarea", "label": "Description" },
+        "price": { "type": "number", "label": "Price", "meta": { "format": "currency" } },
+        "category": { "type": "linked", "label": "Category", "meta": { "collection": "menu_categories", "display_field": "name" } },
+        "is_spicy": { "type": "boolean", "label": "Is Spicy" },
+        "is_popular": { "type": "boolean", "label": "Is Popular" },
+        "is_late_night": { "type": "boolean", "label": "Available Late Night" },
+        "is_vegetarian": { "type": "boolean", "label": "Vegetarian" }
+      },
+      "value": [
+        {
+          "id": "item_a1b2c3",
+          "name": "Classic Smash",
+          "description": "Two smash patties, American cheese, pickles, onion, special sauce on a toasted brioche bun",
+          "price": 7.99,
+          "category": "cat_b1u2r3",
+          "is_spicy": false,
+          "is_popular": true,
+          "is_late_night": true,
+          "is_vegetarian": false
+        },
+        {
+          "id": "item_d4e5f6",
+          "name": "Double Stack",
+          "description": "Four smash patties, double American cheese, special sauce, all the fixings",
+          "price": 11.99,
+          "category": "cat_b1u2r3",
+          "is_spicy": false,
+          "is_popular": true,
+          "is_late_night": true,
+          "is_vegetarian": false
+        },
+        {
+          "id": "item_g7h8i9",
+          "name": "BBQ Bacon Melt",
+          "description": "Smash patty, crispy smoked bacon, sharp cheddar, house BBQ sauce, crispy onion strings",
+          "price": 10.99,
+          "category": "cat_b1u2r3",
+          "is_spicy": false,
+          "is_popular": false,
+          "is_late_night": false,
+          "is_vegetarian": false
+        },
+        {
+          "id": "item_j1k2l3",
+          "name": "Mushroom Swiss",
+          "description": "Smash patty, sautéed wild mushrooms, Swiss cheese, roasted garlic aioli, spring mix",
+          "price": 10.49,
+          "category": "cat_b1u2r3",
+          "is_spicy": false,
+          "is_popular": false,
+          "is_late_night": false,
+          "is_vegetarian": false
+        },
+        {
+          "id": "item_m4n5o6",
+          "name": "Spicy Firebird",
+          "description": "Smash patty, pepper jack, pickled jalapeños, ghost pepper sauce, creamy coleslaw",
+          "price": 10.99,
+          "category": "cat_b1u2r3",
+          "is_spicy": true,
+          "is_popular": true,
+          "is_late_night": true,
+          "is_vegetarian": false
+        },
+        {
+          "id": "item_p7q8r9",
+          "name": "Veggie Stack",
+          "description": "House-made black bean patty, smashed avocado, lettuce, tomato, chipotle mayo",
+          "price": 9.49,
+          "category": "cat_b1u2r3",
+          "is_spicy": false,
+          "is_popular": false,
+          "is_late_night": false,
+          "is_vegetarian": true
+        },
+        {
+          "id": "item_s1t2u3",
+          "name": "Crispy Chicken",
+          "description": "Hand-breaded chicken breast, house pickles, signature sauce on a toasted brioche bun",
+          "price": 9.49,
+          "category": "cat_c4h5k6",
+          "is_spicy": false,
+          "is_popular": true,
+          "is_late_night": false,
+          "is_vegetarian": false
+        },
+        {
+          "id": "item_v4w5x6",
+          "name": "Spicy Chicken",
+          "description": "Crispy chicken, spicy mayo, pickled jalapeños, pepper jack, tangy coleslaw",
+          "price": 9.99,
+          "category": "cat_c4h5k6",
+          "is_spicy": true,
+          "is_popular": false,
+          "is_late_night": false,
+          "is_vegetarian": false
+        },
+        {
+          "id": "item_y7z8a9",
+          "name": "Classic Fries",
+          "description": "Crispy hand-cut fries seasoned with our signature spice blend",
+          "price": 3.49,
+          "category": "cat_s7i8d9",
+          "is_spicy": false,
+          "is_popular": true,
+          "is_late_night": true,
+          "is_vegetarian": true
+        },
+        {
+          "id": "item_b1c2d3",
+          "name": "Sweet Potato Fries",
+          "description": "Crispy sweet potato fries with chipotle honey dipping sauce",
+          "price": 3.99,
+          "category": "cat_s7i8d9",
+          "is_spicy": false,
+          "is_popular": false,
+          "is_late_night": false,
+          "is_vegetarian": true
+        },
+        {
+          "id": "item_e4f5g6",
+          "name": "Onion Rings",
+          "description": "Beer-battered thick-cut onion rings, golden and crispy",
+          "price": 3.99,
+          "category": "cat_s7i8d9",
+          "is_spicy": false,
+          "is_popular": false,
+          "is_late_night": false,
+          "is_vegetarian": true
+        },
+        {
+          "id": "item_h7i8j9",
+          "name": "Side Salad",
+          "description": "Mixed greens, cherry tomatoes, cucumber, pickled red onion, choice of dressing",
+          "price": 3.49,
+          "category": "cat_s7i8d9",
+          "is_spicy": false,
+          "is_popular": false,
+          "is_late_night": false,
+          "is_vegetarian": true
+        },
+        {
+          "id": "item_k1l2m3",
+          "name": "Fountain Drink",
+          "description": "Pepsi products, any size — free refills in-store",
+          "price": 2.49,
+          "category": "cat_d1r2k3",
+          "is_spicy": false,
+          "is_popular": true,
+          "is_late_night": true,
+          "is_vegetarian": true
+        },
+        {
+          "id": "item_n4o5p6",
+          "name": "Hand-Spun Shake",
+          "description": "Vanilla, Chocolate, or Strawberry — made with real ice cream",
+          "price": 4.99,
+          "category": "cat_d1r2k3",
+          "is_spicy": false,
+          "is_popular": true,
+          "is_late_night": true,
+          "is_vegetarian": true
+        },
+        {
+          "id": "item_q7r8s9",
+          "name": "Fresh Lemonade",
+          "description": "House-squeezed lemonade — sweetened or unsweetened, any size",
+          "price": 3.49,
+          "category": "cat_d1r2k3",
+          "is_spicy": false,
+          "is_popular": false,
+          "is_late_night": false,
+          "is_vegetarian": true
+        },
+        {
+          "id": "item_t1u2v3",
+          "name": "Bottled Water",
+          "description": "Crisp purified water",
+          "price": 1.99,
+          "category": "cat_d1r2k3",
+          "is_spicy": false,
+          "is_popular": false,
+          "is_late_night": true,
+          "is_vegetarian": true
+        },
+        {
+          "id": "item_w4x5y6",
+          "name": "Smash Brownie",
+          "description": "Warm double-chocolate brownie, vanilla ice cream, hot fudge drizzle",
+          "price": 4.49,
+          "category": "cat_d4s5s6",
+          "is_spicy": false,
+          "is_popular": false,
+          "is_late_night": false,
+          "is_vegetarian": true
+        },
+        {
+          "id": "item_z7a8b9",
+          "name": "Mini Donuts (6pc)",
+          "description": "Warm cinnamon sugar mini donuts with cream cheese dipping sauce",
+          "price": 3.99,
+          "category": "cat_d4s5s6",
+          "is_spicy": false,
+          "is_popular": true,
+          "is_late_night": false,
+          "is_vegetarian": true
+        }
+      ]
+    },
+    "combo_deals": {
+      "type": "collection",
+      "label": "Combo Deals",
+      "item_schema": {
+        "id": { "type": "text", "label": "ID" },
+        "name": { "type": "text", "label": "Combo Name" },
+        "includes": { "type": "textarea", "label": "Includes" },
+        "regular_price": { "type": "number", "label": "Regular Price", "meta": { "format": "currency" } },
+        "combo_price": { "type": "number", "label": "Combo Price", "meta": { "format": "currency" } },
+        "savings": { "type": "text", "label": "Savings Label" },
+        "badge": { "type": "text", "label": "Badge Text" }
+      },
+      "value": [
+        {
+          "id": "combo_a1b2c3",
+          "name": "Classic Combo",
+          "includes": "Classic Smash + Classic Fries + Fountain Drink",
+          "regular_price": 13.97,
+          "combo_price": 11.99,
+          "savings": "SAVE $1.98",
+          "badge": "MOST POPULAR"
+        },
+        {
+          "id": "combo_d4e5f6",
+          "name": "Double Stack Combo",
+          "includes": "Double Stack + Classic Fries + Fountain Drink",
+          "regular_price": 17.97,
+          "combo_price": 14.99,
+          "savings": "SAVE $2.98",
+          "badge": "BEST VALUE"
+        },
+        {
+          "id": "combo_g7h8i9",
+          "name": "Chicken Combo",
+          "includes": "Crispy Chicken + Sweet Potato Fries + Fresh Lemonade",
+          "regular_price": 16.97,
+          "combo_price": 13.99,
+          "savings": "SAVE $2.98",
+          "badge": "FAN FAVORITE"
+        },
+        {
+          "id": "combo_j1k2l3",
+          "name": "Fire Combo",
+          "includes": "Spicy Firebird + Onion Rings + Fountain Drink",
+          "regular_price": 17.47,
+          "combo_price": 14.49,
+          "savings": "SAVE $2.98",
+          "badge": "🌶 SPICY"
+        }
+      ]
+    },
+    "daily_specials": {
+      "type": "collection",
+      "label": "Daily Specials",
+      "item_schema": {
+        "id": { "type": "text", "label": "ID" },
+        "day": { "type": "number", "label": "Day of Week (0=Sun, 6=Sat)", "meta": { "format": "integer" } },
+        "day_name": { "type": "text", "label": "Day Name" },
+        "title": { "type": "text", "label": "Special Title" },
+        "description": { "type": "textarea", "label": "Description" },
+        "deal_text": { "type": "text", "label": "Deal Highlight" }
+      },
+      "value": [
+        {
+          "id": "spec_s1u2n3",
+          "day": 0,
+          "day_name": "Sunday",
+          "title": "Family Sunday",
+          "description": "2 Classic Smash burgers + 2 Classic Fries + 2 Fountain Drinks — dine-in or takeout",
+          "deal_text": "$24.99 — Save $3.96"
+        },
+        {
+          "id": "spec_m4o5n6",
+          "day": 1,
+          "day_name": "Monday",
+          "title": "Double Down Monday",
+          "description": "Get our legendary Double Stack at Classic Smash prices every Monday — all day long",
+          "deal_text": "Double Stack for $7.99"
+        },
+        {
+          "id": "spec_t7u8e9",
+          "day": 2,
+          "day_name": "Tuesday",
+          "title": "Sweet Swap Tuesday",
+          "description": "Free upgrade to Sweet Potato Fries with any burger — our fans' most-requested deal",
+          "deal_text": "FREE Sweet Potato Fries Upgrade"
+        },
+        {
+          "id": "spec_w1e2d3",
+          "day": 3,
+          "day_name": "Wednesday",
+          "title": "Shake Wednesday",
+          "description": "Any Hand-Spun Shake — Vanilla, Chocolate, or Strawberry — for just $3.49 all day",
+          "deal_text": "Shakes for $3.49"
+        },
+        {
+          "id": "spec_t4h5u6",
+          "day": 4,
+          "day_name": "Thursday",
+          "title": "Thirsty Thursday",
+          "description": "Buy any combo meal and get a second Fountain Drink completely FREE — any size",
+          "deal_text": "2nd Drink FREE with Any Combo"
+        },
+        {
+          "id": "spec_f7r8i9",
+          "day": 5,
+          "day_name": "Friday",
+          "title": "Fire Fridays",
+          "description": "The Spicy Firebird + Classic Fries + Fountain Drink combo at our best price of the week",
+          "deal_text": "Fire Combo for $12.99"
+        },
+        {
+          "id": "spec_s1a2t3",
+          "day": 6,
+          "day_name": "Saturday",
+          "title": "Stack Saturday",
+          "description": "Buy one Double Stack, get the second at 50% off — dine-in only, per table limit 2",
+          "deal_text": "BOGO 50% off Double Stack"
+        }
+      ]
+    }
+  }
+}
